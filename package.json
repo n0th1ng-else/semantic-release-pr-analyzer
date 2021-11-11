@@ -3,6 +3,9 @@
   "version": "0.0.0-semantically-released",
   "description": "Both @semantic-release/commit-analyzer and @semantic-release/release-notes-generator but for Pull Request description",
   "main": "index.js",
+  "scripts": {
+    "format": "prettier --write ."
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:n0th1ng-else/semantic-release-pr-analyzer.git"
@@ -20,5 +23,8 @@
   "license": "MIT",
   "dependencies": {
     "semantic-release": "^17.4.7"
+  },
+  "devDependencies": {
+    "prettier": "2.4.1"
   }
 }
