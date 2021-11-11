@@ -1,0 +1,24 @@
+{
+  "name": "@n0th1ng-else/semantic-release-pr-analyzer",
+  "version": "0.0.0-semantically-released",
+  "description": "Both @semantic-release/commit-analyzer and @semantic-release/release-notes-generator but for Pull Request description",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:n0th1ng-else/semantic-release-pr-analyzer.git"
+  },
+  "keywords": [
+    "semantic-release",
+    "plugin",
+    "pull request",
+    "squash and merge"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "author": "Sergey Nikitin <srg.post@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "semantic-release": "^17.4.7"
+  }
+}
