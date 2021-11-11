@@ -1,5 +1,5 @@
 {
-  "name": "@n0th1ng-else/semantic-release-pr-analyzer",
+  "name": "semantic-release-pr-analyzer",
   "version": "0.0.0-semantically-released",
   "description": "Both @semantic-release/commit-analyzer and @semantic-release/release-notes-generator but for Pull Request description",
   "main": "index.js",
