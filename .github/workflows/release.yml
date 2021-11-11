@@ -1,0 +1,33 @@
+name: New Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish new version
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2.3.4
+
+      - name: Set up node using nvm
+        uses: dcodeIO/setup-node-nvm@v4
+
+      - name: Restore cached node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish new version
+        run: npx semantic-release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
