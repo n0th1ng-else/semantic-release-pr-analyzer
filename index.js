@@ -1,68 +1,33 @@
-const { Octokit } = require("@octokit/rest");
-const getStream = require("get-stream");
-const intoStream = require("into-stream");
-const { sync: parser } = require("conventional-commits-parser");
-const writer = require("conventional-changelog-writer");
-const filter = require("conventional-commits-filter");
+const { analyzeCommits: ac } = require("./src/commit-analyzer");
+const { generateNotes: gn } = require("./src/release-notes-generator");
+const { validateStrategy, getStrategies } = require("./src/utils");
 
-const { analyzeCommits: ac } = require("@semantic-release/commit-analyzer");
-const loadChangelogConfig = require("@semantic-release/release-notes-generator/lib/load-changelog-config");
+const analyzeCommits = async (pluginConfig, context) => {
+  const { commitAnalyzerConfig, strategy: inputStrategy } = pluginConfig;
+  const strategy = validateStrategy(inputStrategy);
+  if (!strategy) {
+    throw new Error(
+      `Invalid strategy: ${inputStrategy}. Available options: ${getStrategies().join(
+        ", "
+      )}`
+    );
+  }
 
-const getPullRequestAsCommit = async () => {
-  const {
-    GITHUB_TOKEN: token,
-    GITHUB_PR_NUMBER: prNumber,
-    GITHUB_REPOSITORY: fullRepo,
-  } = process.env;
-
-  const [owner, repo] = fullRepo.split("/");
-  const pr = await new Octokit({
-    auth: token,
-  }).pulls.get({
-    owner,
-    repo,
-    pull_number: prNumber,
-  });
-
-  const { body, title, updated_at: updated } = pr.data;
-
-  return {
-    subject: title,
-    body,
-    committerDate: updated,
-    message: `${title}\n\n${body}`,
-  };
+  return ac(strategy, commitAnalyzerConfig, context);
 };
 
 const generateNotes = async (pluginConfig, context) => {
-  const commit = await getPullRequestAsCommit();
+  const { notesGeneratorConfig, strategy: inputStrategy } = pluginConfig;
+  const strategy = validateStrategy(inputStrategy);
+  if (!strategy) {
+    throw new Error(
+      `Invalid strategy: ${inputStrategy}. Available options: ${getStrategies().join(
+        ", "
+      )}`
+    );
+  }
 
-  const { parserOpts, writerOpts } = await loadChangelogConfig(
-    pluginConfig,
-    context
-  );
-
-  const parsedCommits = filter([
-    {
-      ...commit,
-      ...parser(commit.message, {
-        ...parserOpts,
-      }),
-    },
-  ]);
-
-  const changelogContext = {
-    version: context.nextRelease.version,
-  };
-
-  return getStream(
-    intoStream.object(parsedCommits).pipe(writer(changelogContext, writerOpts))
-  );
-};
-
-const analyzeCommits = async (pluginConfig, context) => {
-  const commit = await getPullRequestAsCommit();
-  return ac(pluginConfig, { ...context, commits: [commit] });
+  return gn(strategy, notesGeneratorConfig, context);
 };
 
 module.exports = { generateNotes, analyzeCommits };
