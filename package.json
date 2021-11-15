@@ -4,6 +4,8 @@
   "description": "Both @semantic-release/commit-analyzer and @semantic-release/release-notes-generator but for Pull Request description",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
     "format": "prettier --write ."
   },
   "repository": {
@@ -11,20 +13,32 @@
     "url": "git@github.com:n0th1ng-else/semantic-release-pr-analyzer.git"
   },
   "keywords": [
+    "github",
     "semantic-release",
     "plugin",
     "pull request",
     "squash and merge"
   ],
   "files": [
+    "src/commit-analyzer.js",
+    "src/release-notes-generator.js",
+    "src/utils.js",
     "index.js"
   ],
   "author": "Sergey Nikitin <srg.post@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "semantic-release": "^17.4.7"
+    "@octokit/rest": "^18.12.0",
+    "@semantic-release/commit-analyzer": "^8.0.0",
+    "@semantic-release/release-notes-generator": "^9.0.0",
+    "conventional-changelog-writer": "^4.0.0",
+    "conventional-commits-filter": "^2.0.0",
+    "conventional-commits-parser": "^3.0.0",
+    "get-stream": "^6.0.0",
+    "into-stream": "^6.0.0"
   },
   "devDependencies": {
+    "jest": "27.3.1",
     "prettier": "2.4.1"
   }
 }
