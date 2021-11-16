@@ -1,5 +1,8 @@
 # **semantic-release-pr-analyzer**
 
+semantic-release plugin that imitates the behaviour when the team relies on the **_squash and merge_** strategy
+on GitHub.
+
 ## Install
 
 ```bash
@@ -46,4 +49,20 @@ Always analyzes the pull request title and description as a commit.
 
 ### Strict Pull Request strategy (`{strategy: 'strict-pull-request'}`)
 
-The same as the **_Pull Request strategy_**, but it will throw an error if the first commit body is not equal to the pull request description.
+The same as the **_Pull Request strategy_**, but it will throw an error if the first commit body is not equal
+to the pull request description.
+
+## Environment variables
+
+### env.GITHUB_TOKEN
+
+GitHub token to access your repository. Using the `secrets.GITHUB_TOKEN` value should be enough.
+
+### env.GITHUB_PR_NUMBER
+
+The pull request number. In the context of GitHub actions, it is achievable as `github.event.pull_request.number`
+
+### env.GITHUB_REPOSITORY
+
+Repository path, for example `n0th1ng-else/semantic-release-pr-analyzer`. For GitHub actions workflow it is
+set automatically.
