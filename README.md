@@ -30,11 +30,11 @@ The plugin can be configured in the [**semantic-release** configuration file](ht
 
 ### Options
 
-| Option                 | Description        | Default  |
-| ---------------------- | ------------------ | -------- |
-| `strategy`             | analyzing strategy | `github` |
-| `commitAnalyzerConfig` | TODO               | none     |
-| `notesGeneratorConfig` | TODO               | none     |
+| Option                 | Description                                                                                                                        | Default                                 |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `strategy`             | analyzing strategy                                                                                                                 | `github`                                |
+| `commitAnalyzerConfig` | standard commit-analyzer plugin [configuration](https://github.com/semantic-release/commit-analyzer#configuration)                 | default one for commit-analyzer         |
+| `notesGeneratorConfig` | standard release-notes-generator plugin [configuration](https://github.com/semantic-release/release-notes-generator#configuration) | default one for release-notes-generator |
 
 ## Strategy
 
