@@ -416,5 +416,26 @@ describe("utils", () => {
         );
       });
     });
+
+    describe("Environment vars", () => {
+      it.each([["GITHUB_TOKEN"], ["GITHUB_PR_NUMBER"], ["GITHUB_REPOSITORY"]])(
+        "throws an error when env.%s is not specified",
+        (envKey) => {
+          setEnv();
+          process.env[envKey] = "";
+
+          const strategy = "pull-request";
+
+          return getCommit(strategy, []).then(
+            () => {
+              throw new Error("Should not be there");
+            },
+            (err) => {
+              expect(err.message).toBe(`${envKey} is not defined`);
+            }
+          );
+        }
+      );
+    });
   });
 });
