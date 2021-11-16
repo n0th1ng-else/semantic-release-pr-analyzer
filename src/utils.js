@@ -70,7 +70,9 @@ const getStrictGithubStrategyCommit = async (commits) => {
     return prCommit;
   }
 
-  throw new Error("Commit is not consistent with the pull request description");
+  throw new Error(
+    "The pull request description is not equal to the first commit body"
+  );
 };
 
 const STRATEGY = {

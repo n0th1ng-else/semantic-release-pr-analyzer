@@ -56,9 +56,11 @@ describe("utils", () => {
       );
     });
 
-    describe("github", () => {
+    describe("github strategy", () => {
       it("returns commit data if there is a single commit", () => {
+        setEnv();
         const strategy = "github";
+
         const commits = [
           {
             subject: "Commit title",
@@ -76,17 +78,10 @@ describe("utils", () => {
         });
       });
 
-      it("returns pull data if there is more than 1 commit", () => {
+      it("returns pull request data if there is more than 1 commit", () => {
         setEnv();
-        setMockResult(() =>
-          Promise.resolve({
-            data: {
-              title: "pr title",
-              body: "pr body",
-            },
-          })
-        );
         const strategy = "github";
+
         const commits = [
           {
             subject: "Commit title 1",
@@ -99,6 +94,15 @@ describe("utils", () => {
             message: "Commit title 2\n\ndescription 2",
           },
         ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "pr title",
+              body: "pr body",
+            },
+          })
+        );
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -112,9 +116,8 @@ describe("utils", () => {
 
       it("throws an error when the github API is not available", () => {
         setEnv();
-        setMockResult(() => Promise.reject(new Error("Where is it?")));
-
         const strategy = "github";
+
         const commits = [
           {
             subject: "Commit title 1",
@@ -128,12 +131,287 @@ describe("utils", () => {
           },
         ];
 
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
         return getCommit(strategy, commits).then(
           () => {
             throw new Error("Should not be there");
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
+          }
+        );
+      });
+    });
+
+    describe("pull-request strategy", () => {
+      it("returns pull request data if there is a single commit", () => {
+        setEnv();
+        const strategy = "pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title",
+            body: "description",
+            message: "Commit title\n\ndescription",
+          },
+        ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "pr title",
+              body: "pr body",
+            },
+          })
+        );
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: "pr title",
+            body: "pr body",
+            message: "pr title\n\npr body",
+          });
+        });
+      });
+
+      it("returns pull request data if there is more than 1 commit", () => {
+        setEnv();
+        const strategy = "pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "pr title",
+              body: "pr body",
+            },
+          })
+        );
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: "pr title",
+            body: "pr body",
+            message: "pr title\n\npr body",
+          });
+        });
+      });
+
+      it("throws an error when the github API is not available", () => {
+        setEnv();
+        const strategy = "pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe("Where is it?");
+          }
+        );
+      });
+
+      it("throws an error when the github API is not available (single commit)", () => {
+        setEnv();
+        const strategy = "pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe("Where is it?");
+          }
+        );
+      });
+    });
+
+    describe("strict-pull-request strategy", () => {
+      it("returns pull request data if there is a single commit", () => {
+        setEnv();
+        const strategy = "strict-pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title",
+            body: "description",
+            message: "Commit title\n\ndescription",
+          },
+        ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "Commit title",
+              body: "description",
+            },
+          })
+        );
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: "Commit title",
+            body: "description",
+            message: "Commit title\n\ndescription",
+          });
+        });
+      });
+
+      it("returns pull request data if there is more than 1 commit", () => {
+        setEnv();
+        const strategy = "strict-pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "Commit title 1",
+              body: "description 1",
+            },
+          })
+        );
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          });
+        });
+      });
+
+      it("throws an error when the github API is not available", () => {
+        setEnv();
+        const strategy = "strict-pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe("Where is it?");
+          }
+        );
+      });
+
+      it("throws an error when the github API is not available (single commit)", () => {
+        setEnv();
+        const strategy = "strict-pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe("Where is it?");
+          }
+        );
+      });
+
+      it("throws an error when the pull request description is not eq to the first commit body", () => {
+        setEnv();
+        const strategy = "strict-pull-request";
+
+        const commits = [
+          {
+            subject: "Commit title",
+            body: "description",
+            message: "Commit title\n\ndescription",
+          },
+        ];
+
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "pr title",
+              body: "pr body",
+            },
+          })
+        );
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe(
+              "The pull request description is not equal to the first commit body"
+            );
           }
         );
       });
