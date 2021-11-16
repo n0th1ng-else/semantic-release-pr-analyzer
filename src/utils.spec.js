@@ -1,3 +1,4 @@
+const { setMockResult, resetMock } = require("./__mocks__/@octokit/rest");
 const { getStrategies, validateStrategy, getCommit } = require("./utils");
 
 const REAL_ENV = process.env;
@@ -40,6 +41,7 @@ describe("utils", () => {
     beforeEach(() => {
       jest.resetModules();
       process.env = { ...REAL_ENV };
+      resetMock();
     });
 
     it("throws an error if the strategy is unknown", () => {
@@ -55,7 +57,7 @@ describe("utils", () => {
     });
 
     describe("github", () => {
-      it("returns commit daa if there is a single commit", () => {
+      it("returns commit data if there is a single commit", () => {
         const strategy = "github";
         const commits = [
           {
@@ -74,8 +76,16 @@ describe("utils", () => {
         });
       });
 
-      it("returns commit daa if there is a single commit", () => {
+      it("returns pull data if there is more than 1 commit", () => {
         setEnv();
+        setMockResult(() =>
+          Promise.resolve({
+            data: {
+              title: "pr title",
+              body: "pr body",
+            },
+          })
+        );
         const strategy = "github";
         const commits = [
           {
@@ -92,11 +102,40 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "Commit title",
-            body: "description",
-            message: "Commit title\n\ndescription",
+            subject: "pr title",
+            body: "* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
+            message:
+              "pr title\n\n* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
           });
         });
+      });
+
+      it("throws an error when the github API is not available", () => {
+        setEnv();
+        setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+        const strategy = "github";
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        return getCommit(strategy, commits).then(
+          () => {
+            throw new Error("Should not be there");
+          },
+          (err) => {
+            expect(err.message).toBe("Where is it?");
+          }
+        );
       });
     });
   });

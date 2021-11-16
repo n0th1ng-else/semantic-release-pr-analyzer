@@ -3,8 +3,10 @@ const { Octokit } = require("@octokit/rest");
 const eq = (commit1, commit2) =>
   commit1.subject === commit2.subject && commit1.body === commit2.body;
 
+const mergeItems = (arr) => arr.join("\n\n");
+
 const getFullCommit = (title, body) =>
-  [title, body].filter(Boolean).join("\n\n");
+  mergeItems([title, body].filter(Boolean));
 
 const imitateCommit = (title, body) => ({
   subject: title,
@@ -50,9 +52,9 @@ const getGithubStrategyCommit = async (commits) => {
   }
 
   const { subject } = await getPullRequestAsCommit();
-  const body = commits
-    .map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
-    .join("\n\n");
+  const body = mergeItems(
+    commits.map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
+  );
 
   return imitateCommit(subject, body);
 };
