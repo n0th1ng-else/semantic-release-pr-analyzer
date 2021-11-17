@@ -1,20 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const eq = (commit1, commit2) =>
-  commit1.subject === commit2.subject && commit1.body === commit2.body;
-
-const mergeItems = (arr) => arr.join("\n\n");
-
-const getFullCommit = (title, body) =>
-  mergeItems([title, body].filter(Boolean));
-
-const imitateCommit = (title, body) => ({
-  subject: title,
-  body,
-  message: getFullCommit(title, body),
-});
-
-const getPullRequestAsCommit = async () => {
+const getEnv = () => {
   const {
     GITHUB_TOKEN: token,
     GITHUB_PR_NUMBER: prNumber,
@@ -32,6 +18,30 @@ const getPullRequestAsCommit = async () => {
   if (!token) {
     throw new Error("GITHUB_TOKEN is not defined");
   }
+
+  return {
+    token,
+    fullRepo,
+    prNumber,
+  };
+};
+
+const eq = (commit1, commit2) =>
+  commit1.subject === commit2.subject && commit1.body === commit2.body;
+
+const mergeItems = (arr) => arr.join("\n\n");
+
+const getFullCommit = (title, body) =>
+  mergeItems([title, body].filter(Boolean));
+
+const imitateCommit = (title, body) => ({
+  subject: title,
+  body,
+  message: getFullCommit(title, body),
+});
+
+const getPullRequestAsCommit = async () => {
+  const { token, prNumber, fullRepo } = getEnv();
 
   const [owner, repo] = fullRepo.split("/");
   const pr = await new Octokit({
@@ -95,12 +105,13 @@ const getRawCommit = async (strategy, commits) => {
 };
 
 const getCommit = async (strategy, commits) => {
-  /**
-   * TODO add pull-request number to the commit title.
-   * This does not affect the expected version.
-   * Just for consistency with GitHub.
-   */
-  return getRawCommit(strategy, commits);
+  const commit = await getRawCommit(strategy, commits);
+  const { prNumber } = getEnv();
+
+  return {
+    ...commit,
+    subject: `${commit.subject} (#${prNumber})`,
+  };
 };
 
 const validateStrategy = (strategy) => {
