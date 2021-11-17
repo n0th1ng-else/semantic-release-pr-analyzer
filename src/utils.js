@@ -81,7 +81,7 @@ const STRATEGY = {
   StrictPullRequest: "strict-pull-request",
 };
 
-const getCommit = async (strategy, commits) => {
+const getRawCommit = async (strategy, commits) => {
   switch (strategy) {
     case STRATEGY.Github:
       return getGithubStrategyCommit(commits);
@@ -92,6 +92,15 @@ const getCommit = async (strategy, commits) => {
     default:
       throw new Error(`Unknown strategy: ${strategy}`);
   }
+};
+
+const getCommit = async (strategy, commits) => {
+  /**
+   * TODO add pull-request number to the commit title.
+   * This does not affect the expected version.
+   * Just for consistency with GitHub.
+   */
+  return getRawCommit(strategy, commits);
 };
 
 const validateStrategy = (strategy) => {

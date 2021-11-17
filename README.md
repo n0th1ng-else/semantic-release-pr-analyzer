@@ -38,10 +38,19 @@ The plugin can be configured in the [**semantic-release** configuration file](ht
 
 ## Strategy
 
-### Github strategy (`{strategy: 'github'}`)
+### GitHub strategy (`{strategy: 'github'}`)
 
-- In case of a single commit in the branch, semantic-release analyzes that commit.
-- When multiple commits are in the branch, semantic-release analyzes the commit made of the pull request title and commit concatenation in the body.
+Once PR is merged, GitHib creates a squash commit in the main branch following the rules below:
+
+| Number of commits in the pull request | Main Branch Commit Title                                                                   | Main Branch Commit Description                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Single commit                         | The title of the commit message for the single commit, followed by the pull request number | The body text of the commit message for the single commit                    |
+| More than one commit                  | The pull request title, followed by the pull request number                                | A list of the commit messages for all of the squashed commits, in date order |
+
+You can read more about this in the official
+[GitHub docs](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#merge-message-for-a-squash-merge).
+This plugin hijacks semantic-release flow and replaces the commits list with the one that respects these rules
+into the mix.
 
 ### Pull Request strategy (`{strategy: 'pull-request'}`)
 
@@ -66,3 +75,7 @@ The pull request number. In the context of GitHub actions, it is achievable as `
 
 Repository path, for example `n0th1ng-else/semantic-release-pr-analyzer`. For GitHub actions workflow it is
 set automatically.
+
+## Examples
+
+##### You can see the sample configuration in the [examples folder](https://github.com/n0th1ng-else/semantic-release-pr-analyzer/tree/main/examples).
