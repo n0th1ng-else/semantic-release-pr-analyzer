@@ -3,7 +3,7 @@ const { generateNotes: gn } = require("./src/release-notes-generator");
 const { validateStrategy, getStrategies } = require("./src/utils");
 
 const analyzeCommits = async (pluginConfig, context) => {
-  const { commitAnalyzerConfig, strategy: inputStrategy } = pluginConfig;
+  const { commitAnalyzerConfig, strategy: inputStrategy } = pluginConfig || {};
   const strategy = validateStrategy(inputStrategy);
   if (!strategy) {
     throw new Error(
@@ -17,7 +17,7 @@ const analyzeCommits = async (pluginConfig, context) => {
 };
 
 const generateNotes = async (pluginConfig, context) => {
-  const { notesGeneratorConfig, strategy: inputStrategy } = pluginConfig;
+  const { notesGeneratorConfig, strategy: inputStrategy } = pluginConfig || {};
   const strategy = validateStrategy(inputStrategy);
   if (!strategy) {
     throw new Error(
