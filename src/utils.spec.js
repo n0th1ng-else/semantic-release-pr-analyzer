@@ -3,9 +3,11 @@ const { getStrategies, validateStrategy, getCommit } = require("./utils");
 
 const REAL_ENV = process.env;
 
+const prNumber = "322";
+
 const setEnv = () => {
   process.env.GITHUB_REPOSITORY = "sen/repo";
-  process.env.GITHUB_PR_NUMBER = "666";
+  process.env.GITHUB_PR_NUMBER = prNumber;
   process.env.GITHUB_TOKEN = "SUPER-TOKEN";
 };
 
@@ -71,7 +73,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "Commit title",
+            subject: `Commit title (#${prNumber})`,
             body: "description",
             message: "Commit title\n\ndescription",
           });
@@ -106,7 +108,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "pr title",
+            subject: `pr title (#${prNumber})`,
             body: "* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
             message:
               "pr title\n\n* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
@@ -168,7 +170,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "pr title",
+            subject: `pr title (#${prNumber})`,
             body: "pr body",
             message: "pr title\n\npr body",
           });
@@ -203,7 +205,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "pr title",
+            subject: `pr title (#${prNumber})`,
             body: "pr body",
             message: "pr title\n\npr body",
           });
@@ -288,7 +290,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "Commit title",
+            subject: `Commit title (#${prNumber})`,
             body: "description",
             message: "Commit title\n\ndescription",
           });
@@ -323,7 +325,7 @@ describe("utils", () => {
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
-            subject: "Commit title 1",
+            subject: `Commit title 1 (#${prNumber})`,
             body: "description 1",
             message: "Commit title 1\n\ndescription 1",
           });
