@@ -1,5 +1,5 @@
 const { setMockResult, resetMock } = require("./__mocks__/@octokit/rest");
-const { getStrategies, validateStrategy, getCommit } = require("./utils");
+const { validateStrategy, getCommit } = require("./utils");
 
 const REAL_ENV = process.env;
 
@@ -12,23 +12,18 @@ const setEnv = () => {
 };
 
 describe("utils", () => {
-  describe("getStrategies", () => {
-    it("gets available strategies", () => {
-      expect(getStrategies()).toEqual([
-        "github",
-        "pull-request",
-        "strict-pull-request",
-      ]);
-    });
-  });
-
   describe("validateStrategy", () => {
     it("falls back on the default strategy if no strategy specified", () => {
       expect(validateStrategy()).toBe("github");
     });
 
-    it("returns undefined if the strategy is unknown", () => {
-      expect(validateStrategy("foo")).toBeUndefined();
+    it("throws an error when the strategy is unknown", () => {
+      const strategy = "foo";
+      expect(() => {
+        validateStrategy(strategy);
+      }).toThrow(
+        `Invalid strategy: ${strategy}. Available options: github, pull-request, strict-pull-request`
+      );
     });
 
     it.each([["github"], ["pull-request"], ["strict-pull-request"]])(

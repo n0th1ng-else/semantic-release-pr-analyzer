@@ -114,6 +114,8 @@ const getCommit = async (strategy, commits) => {
   };
 };
 
+const getStrategies = () => Object.values(STRATEGY);
+
 const validateStrategy = (strategy) => {
   if (!strategy) {
     return STRATEGY.Github;
@@ -122,12 +124,14 @@ const validateStrategy = (strategy) => {
   if (Object.values(STRATEGY).includes(strategy)) {
     return strategy;
   }
-};
 
-const getStrategies = () => Object.values(STRATEGY);
+  const strategies = getStrategies().join(", ");
+  throw new Error(
+    `Invalid strategy: ${strategy}. Available options: ${strategies}`
+  );
+};
 
 module.exports = {
   getCommit,
-  getStrategies,
   validateStrategy,
 };

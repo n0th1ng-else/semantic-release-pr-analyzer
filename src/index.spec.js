@@ -20,6 +20,20 @@ describe("analyzeCommits", () => {
       expect(ac).toBeCalledWith("github", undefined, undefined);
     });
   });
+
+  it("throws an error when the strategy is unknown", () => {
+    const strategy = "foo";
+    return analyzeCommits({ strategy }).then(
+      () => {
+        throw new Error("Should not be there");
+      },
+      (err) => {
+        expect(err.message).toBe(
+          "Invalid strategy: foo. Available options: github, pull-request, strict-pull-request"
+        );
+      }
+    );
+  });
 });
 
 describe("generateNotes", () => {
@@ -31,5 +45,19 @@ describe("generateNotes", () => {
     return generateNotes().then(() => {
       expect(gn).toBeCalledWith("github", undefined, undefined);
     });
+  });
+
+  it("throws an error when the strategy is unknown", () => {
+    const strategy = "foo";
+    return generateNotes({ strategy }).then(
+      () => {
+        throw new Error("Should not be there");
+      },
+      (err) => {
+        expect(err.message).toBe(
+          "Invalid strategy: foo. Available options: github, pull-request, strict-pull-request"
+        );
+      }
+    );
   });
 });
