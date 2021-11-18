@@ -4,18 +4,14 @@ const { validateStrategy } = require("./src/utils");
 
 const analyzeCommits = async (pluginConfig, context) => {
   const { commitAnalyzerConfig, strategy: strtg } = pluginConfig || {};
-
   const strategy = validateStrategy(strtg);
-
-  return ac(strategy, commitAnalyzerConfig, context);
+  return ac(strategy, { ...pluginConfig, ...commitAnalyzerConfig }, context);
 };
 
 const generateNotes = async (pluginConfig, context) => {
   const { notesGeneratorConfig, strategy: strtg } = pluginConfig || {};
-
   const strategy = validateStrategy(strtg);
-
-  return gn(strategy, notesGeneratorConfig, context);
+  return gn(strategy, { ...pluginConfig, ...notesGeneratorConfig }, context);
 };
 
 module.exports = { generateNotes, analyzeCommits };
