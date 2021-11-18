@@ -1,8 +1,24 @@
+// Use of the semantic-release-pr-analyzer with pull-request strategy.
+// Also we can override the defaults for commit-analyzer and release-notes-generator
+
 const getConfig = (runInPRContext) => {
   // In the pull-request action we only use semantic-release-pr-analyzer plugin
   if (runInPRContext) {
     return {
-      plugins: ["semantic-release-pr-analyzer"],
+      plugins: [
+        [
+          "semantic-release-pr-analyzer",
+          {
+            strategy: "pull-request",
+            commitAnalyzerConfig: {
+              preset: "eslint",
+            },
+            notesGeneratorConfig: {
+              preset: "eslint",
+            },
+          },
+        ],
+      ],
     };
   }
 
