@@ -26,8 +26,10 @@ const getEnv = () => {
   };
 };
 
-const eq = (commit1, commit2) =>
-  commit1.subject === commit2.subject && commit1.body === commit2.body;
+const eqSubject = (commit1, commit2) => commit1.subject === commit2.subject;
+
+const eqFull = (commit1, commit2) =>
+  eqSubject(commit1, commit2) && commit1.body === commit2.body;
 
 const mergeItems = (arr) => arr.join("\n\n");
 
@@ -56,12 +58,12 @@ const getPullRequestAsCommit = async () => {
   return imitateCommit(title, body);
 };
 
-const getGithubStrategyCommit = async (commits) => {
+const getGithubStrategyCommit = async (commits, prCommit) => {
   if (commits.length === 1) {
     return commits[0];
   }
 
-  const { subject } = await getPullRequestAsCommit();
+  const { subject } = prCommit || (await getPullRequestAsCommit());
   const body = mergeItems(
     commits.map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
   );
@@ -75,8 +77,25 @@ const getStrictGithubStrategyCommit = async (commits) => {
   }
 
   const prCommit = await getPullRequestAsCommit();
-  const first = commits[0];
-  if (eq(prCommit, first)) {
+  const firstCommit = commits[0];
+
+  if (eqSubject(prCommit, firstCommit)) {
+    return getGithubStrategyCommit(commits, prCommit);
+  }
+
+  throw new Error(
+    "The pull request title is not equal to the first commit title"
+  );
+};
+
+const getStrictPullRequestStrategyCommit = async (commits) => {
+  if (!commits.length) {
+    throw new Error("No commits found");
+  }
+
+  const prCommit = await getPullRequestAsCommit();
+  const firstCommit = commits[0];
+  if (eqFull(prCommit, firstCommit)) {
     return prCommit;
   }
 
@@ -87,6 +106,7 @@ const getStrictGithubStrategyCommit = async (commits) => {
 
 const STRATEGY = {
   Github: "github",
+  StrictGithub: "strict-github",
   PullRequest: "pull-request",
   StrictPullRequest: "strict-pull-request",
 };
@@ -95,10 +115,12 @@ const getRawCommit = async (strategy, commits) => {
   switch (strategy) {
     case STRATEGY.Github:
       return getGithubStrategyCommit(commits);
+    case STRATEGY.StrictGithub:
+      return getStrictGithubStrategyCommit(commits);
     case STRATEGY.PullRequest:
       return getPullRequestAsCommit();
     case STRATEGY.StrictPullRequest:
-      return getStrictGithubStrategyCommit(commits);
+      return getStrictPullRequestStrategyCommit(commits);
     default:
       throw new Error(`Unknown strategy: ${strategy}`);
   }

@@ -52,6 +52,11 @@ You can read more about this in the official
 This plugin hijacks semantic-release flow and replaces the commits list with the one that respects these rules
 into the mix.
 
+### Strict GitHub strategy (`{strategy: 'strict-github'}`)
+
+The same as the **_GitHub strategy_**, but it will throw an error if the first commit title is not equal
+to the pull request title.
+
 ### Pull Request strategy (`{strategy: 'pull-request'}`)
 
 Always analyzes the pull request title and description as a commit.
