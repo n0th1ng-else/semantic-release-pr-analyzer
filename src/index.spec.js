@@ -29,7 +29,7 @@ describe("analyzeCommits", () => {
       },
       (err) => {
         expect(err.message).toBe(
-          "Invalid strategy: foo. Available options: github, pull-request, strict-pull-request"
+          "Invalid strategy: foo. Available options: github, strict-github, pull-request, strict-pull-request"
         );
       }
     );
@@ -76,7 +76,7 @@ describe("generateNotes", () => {
       },
       (err) => {
         expect(err.message).toBe(
-          "Invalid strategy: foo. Available options: github, pull-request, strict-pull-request"
+          "Invalid strategy: foo. Available options: github, strict-github, pull-request, strict-pull-request"
         );
       }
     );

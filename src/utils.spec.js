@@ -22,16 +22,18 @@ describe("utils", () => {
       expect(() => {
         validateStrategy(strategy);
       }).toThrow(
-        `Invalid strategy: ${strategy}. Available options: github, pull-request, strict-pull-request`
+        `Invalid strategy: ${strategy}. Available options: github, strict-github, pull-request, strict-pull-request`
       );
     });
 
-    it.each([["github"], ["pull-request"], ["strict-pull-request"]])(
-      "returns %s if it was specified",
-      (strategy) => {
-        expect(validateStrategy(strategy)).toBe(strategy);
-      }
-    );
+    it.each([
+      ["github"],
+      ["strict-github"],
+      ["pull-request"],
+      ["strict-pull-request"],
+    ])("returns %s if it was specified", (strategy) => {
+      expect(validateStrategy(strategy)).toBe(strategy);
+    });
   });
 
   describe("getCommit", () => {
@@ -92,7 +94,7 @@ describe("utils", () => {
           },
         ];
 
-        setMockResult(() =>
+        const mockFn = jest.fn(() =>
           Promise.resolve({
             data: {
               title: "pr title",
@@ -100,6 +102,7 @@ describe("utils", () => {
             },
           })
         );
+        setMockResult(mockFn);
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -108,6 +111,7 @@ describe("utils", () => {
             message:
               "pr title\n\n* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
           });
+          expect(mockFn).toBeCalledTimes(1);
         });
       });
 
@@ -141,6 +145,204 @@ describe("utils", () => {
       });
     });
 
+    describe("strict-github strategy", () => {
+      it("returns commit data if there is a single commit and the title eq to the PR title", () => {
+        setEnv();
+        const strategy = "strict-github";
+
+        const commits = [
+          {
+            subject: "Commit title",
+            body: "description",
+            message: "Commit title\n\ndescription",
+          },
+        ];
+
+        const mockFn = jest.fn(() =>
+          Promise.resolve({
+            data: {
+              title: "Commit title",
+              body: "pr body",
+            },
+          })
+        );
+        setMockResult(mockFn);
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: `Commit title (#${prNumber})`,
+            body: "description",
+            message: "Commit title\n\ndescription",
+          });
+          expect(mockFn).toBeCalledTimes(1);
+        });
+      });
+
+      it("returns pull request data if there is more than 1 commit and the first commit title eq to the PR title", () => {
+        setEnv();
+        const strategy = "strict-github";
+
+        const commits = [
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
+          },
+          {
+            subject: "Commit title 2",
+            body: "description 2",
+            message: "Commit title 2\n\ndescription 2",
+          },
+        ];
+
+        const mockFn = jest.fn(() =>
+          Promise.resolve({
+            data: {
+              title: "Commit title 1",
+              body: "pr body",
+            },
+          })
+        );
+        setMockResult(mockFn);
+
+        return getCommit(strategy, commits).then((commit) => {
+          expect(commit).toEqual({
+            subject: `Commit title 1 (#${prNumber})`,
+            body: "* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
+            message:
+              "Commit title 1\n\n* Commit title 1\n\ndescription 1\n\n* Commit title 2\n\ndescription 2",
+          });
+          expect(mockFn).toBeCalledTimes(1);
+        });
+      });
+
+      describe("throws an error", () => {
+        it("for single commit when the github API is not available", () => {
+          setEnv();
+          const strategy = "strict-github";
+
+          const commits = [
+            {
+              subject: "Commit title",
+              body: "description",
+              message: "Commit title\n\ndescription",
+            },
+          ];
+
+          setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+          return getCommit(strategy, commits).then(
+            () => {
+              throw new Error("Should not be there");
+            },
+            (err) => {
+              expect(err.message).toBe("Where is it?");
+            }
+          );
+        });
+
+        it("for multiple commits when the github API is not available", () => {
+          setEnv();
+          const strategy = "strict-github";
+
+          const commits = [
+            {
+              subject: "Commit title 1",
+              body: "description 1",
+              message: "Commit title 1\n\ndescription 1",
+            },
+            {
+              subject: "Commit title 2",
+              body: "description 2",
+              message: "Commit title 2\n\ndescription 2",
+            },
+          ];
+
+          setMockResult(() => Promise.reject(new Error("Where is it?")));
+
+          return getCommit(strategy, commits).then(
+            () => {
+              throw new Error("Should not be there");
+            },
+            (err) => {
+              expect(err.message).toBe("Where is it?");
+            }
+          );
+        });
+
+        it("for single commit when the commit title is not eq to the PR title", () => {
+          setEnv();
+          const strategy = "strict-github";
+
+          const commits = [
+            {
+              subject: "Commit title",
+              body: "description",
+              message: "Commit title\n\ndescription",
+            },
+          ];
+
+          setMockResult(() =>
+            Promise.resolve({
+              data: {
+                title: "pr title",
+                body: "description",
+              },
+            })
+          );
+
+          return getCommit(strategy, commits).then(
+            () => {
+              throw new Error("Should not be there");
+            },
+            (err) => {
+              expect(err.message).toBe(
+                "The pull request title is not equal to the first commit title"
+              );
+            }
+          );
+        });
+
+        it("for multiple commits when the first commit title is not eq to the PR title", () => {
+          setEnv();
+          const strategy = "strict-github";
+
+          const commits = [
+            {
+              subject: "Commit title 1",
+              body: "description 1",
+              message: "Commit title 1\n\ndescription 1",
+            },
+            {
+              subject: "Commit title 2",
+              body: "description 2",
+              message: "Commit title 2\n\ndescription 2",
+            },
+          ];
+
+          setMockResult(() =>
+            Promise.resolve({
+              data: {
+                title: "Commit title 2",
+                body: "description 2",
+              },
+            })
+          );
+
+          return getCommit(strategy, commits).then(
+            () => {
+              throw new Error("Should not be there");
+            },
+            (err) => {
+              expect(err.message).toBe(
+                "The pull request title is not equal to the first commit title"
+              );
+            }
+          );
+        });
+      });
+    });
+
     describe("pull-request strategy", () => {
       it("returns pull request data if there is a single commit", () => {
         setEnv();
@@ -154,7 +356,7 @@ describe("utils", () => {
           },
         ];
 
-        setMockResult(() =>
+        const mockFn = jest.fn(() =>
           Promise.resolve({
             data: {
               title: "pr title",
@@ -162,6 +364,7 @@ describe("utils", () => {
             },
           })
         );
+        setMockResult(mockFn);
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -169,6 +372,7 @@ describe("utils", () => {
             body: "pr body",
             message: "pr title\n\npr body",
           });
+          expect(mockFn).toBeCalledTimes(1);
         });
       });
 
@@ -189,7 +393,7 @@ describe("utils", () => {
           },
         ];
 
-        setMockResult(() =>
+        const mockFn = jest.fn(() =>
           Promise.resolve({
             data: {
               title: "pr title",
@@ -197,6 +401,7 @@ describe("utils", () => {
             },
           })
         );
+        setMockResult(mockFn);
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -204,6 +409,7 @@ describe("utils", () => {
             body: "pr body",
             message: "pr title\n\npr body",
           });
+          expect(mockFn).toBeCalledTimes(1);
         });
       });
 
@@ -274,7 +480,7 @@ describe("utils", () => {
           },
         ];
 
-        setMockResult(() =>
+        const mockFn = jest.fn(() =>
           Promise.resolve({
             data: {
               title: "Commit title",
@@ -282,6 +488,7 @@ describe("utils", () => {
             },
           })
         );
+        setMockResult(mockFn);
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -289,6 +496,7 @@ describe("utils", () => {
             body: "description",
             message: "Commit title\n\ndescription",
           });
+          expect(mockFn).toBeCalledTimes(1);
         });
       });
 
@@ -309,7 +517,7 @@ describe("utils", () => {
           },
         ];
 
-        setMockResult(() =>
+        const mockFn = jest.fn(() =>
           Promise.resolve({
             data: {
               title: "Commit title 1",
@@ -317,6 +525,7 @@ describe("utils", () => {
             },
           })
         );
+        setMockResult(mockFn);
 
         return getCommit(strategy, commits).then((commit) => {
           expect(commit).toEqual({
@@ -324,6 +533,7 @@ describe("utils", () => {
             body: "description 1",
             message: "Commit title 1\n\ndescription 1",
           });
+          expect(mockFn).toBeCalledTimes(1);
         });
       });
 
