@@ -83,14 +83,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -121,14 +121,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -184,14 +184,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -247,14 +247,14 @@ describe("utils", () => {
 
           const commits = [
             {
-              subject: "Commit title 1",
-              body: "description 1",
-              message: "Commit title 1\n\ndescription 1",
-            },
-            {
               subject: "Commit title 2",
               body: "description 2",
               message: "Commit title 2\n\ndescription 2",
+            },
+            {
+              subject: "Commit title 1",
+              body: "description 1",
+              message: "Commit title 1\n\ndescription 1",
             },
           ];
 
@@ -309,14 +309,14 @@ describe("utils", () => {
 
           const commits = [
             {
-              subject: "Commit title 1",
-              body: "description 1",
-              message: "Commit title 1\n\ndescription 1",
-            },
-            {
               subject: "Commit title 2",
               body: "description 2",
               message: "Commit title 2\n\ndescription 2",
+            },
+            {
+              subject: "Commit title 1",
+              body: "description 1",
+              message: "Commit title 1\n\ndescription 1",
             },
           ];
 
@@ -382,14 +382,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -419,14 +419,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -506,14 +506,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 
@@ -543,14 +543,14 @@ describe("utils", () => {
 
         const commits = [
           {
-            subject: "Commit title 1",
-            body: "description 1",
-            message: "Commit title 1\n\ndescription 1",
-          },
-          {
             subject: "Commit title 2",
             body: "description 2",
             message: "Commit title 2\n\ndescription 2",
+          },
+          {
+            subject: "Commit title 1",
+            body: "description 1",
+            message: "Commit title 1\n\ndescription 1",
           },
         ];
 

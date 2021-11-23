@@ -36,6 +36,8 @@ const mergeItems = (arr) => arr.join("\n\n");
 const getFullCommit = (title, body) =>
   mergeItems([title, body].filter(Boolean));
 
+const getFirstCommit = (commits) => commits[commits.length - 1];
+
 const imitateCommit = (title, body) => ({
   subject: title,
   body,
@@ -58,15 +60,20 @@ const getPullRequestAsCommit = async () => {
   return imitateCommit(title, body);
 };
 
+const getGithubStrategyCommitBody = (commits) =>
+  mergeItems(
+    commits
+      .map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
+      .reverse()
+  );
+
 const getGithubStrategyCommit = async (commits, prCommit) => {
   if (commits.length === 1) {
-    return commits[0];
+    return getFirstCommit(commits);
   }
 
   const { subject } = prCommit || (await getPullRequestAsCommit());
-  const body = mergeItems(
-    commits.map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
-  );
+  const body = getGithubStrategyCommitBody(commits);
 
   return imitateCommit(subject, body);
 };
@@ -77,7 +84,7 @@ const getStrictGithubStrategyCommit = async (commits) => {
   }
 
   const prCommit = await getPullRequestAsCommit();
-  const firstCommit = commits[0];
+  const firstCommit = getFirstCommit(commits);
 
   if (eqSubject(prCommit, firstCommit)) {
     return getGithubStrategyCommit(commits, prCommit);
@@ -94,7 +101,7 @@ const getStrictPullRequestStrategyCommit = async (commits) => {
   }
 
   const prCommit = await getPullRequestAsCommit();
-  const firstCommit = commits[0];
+  const firstCommit = getFirstCommit(commits);
   if (eqFull(prCommit, firstCommit)) {
     return prCommit;
   }
