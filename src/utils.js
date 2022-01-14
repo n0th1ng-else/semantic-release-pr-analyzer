@@ -1,4 +1,5 @@
 const { Octokit } = require("@octokit/rest");
+const debug = require("debug")("semantic-release:pr-analyzer");
 
 const getEnv = () => {
   const {
@@ -26,10 +27,17 @@ const getEnv = () => {
   };
 };
 
-const eqSubject = (commit1, commit2) => commit1.subject === commit2.subject;
+const eqSubject = (commit1, commit2) => {
+  debug(`commit 1 subject was ${commit1.subject}`);
+  debug(`commit 2 subject was ${commit2.subject}`);
+  return commit1.subject === commit2.subject;
+};
 
-const eqFull = (commit1, commit2) =>
-  eqSubject(commit1, commit2) && commit1.body === commit2.body;
+const eqFull = (commit1, commit2) => {
+  debug(`commit 1 body was ${commit1.body}`);
+  debug(`commit 2 body was ${commit2.body}`);
+  return eqSubject(commit1, commit2) && commit1.body === commit2.body;
+};
 
 const mergeItems = (arr) => arr.join("\n\n");
 
@@ -69,12 +77,13 @@ const getGithubStrategyCommitBody = (commits) =>
 
 const getGithubStrategyCommit = async (commits, prCommit) => {
   if (commits.length === 1) {
+    debug("Only single commit found, using it");
     return getFirstCommit(commits);
   }
 
   const { subject } = prCommit || (await getPullRequestAsCommit());
   const body = getGithubStrategyCommitBody(commits);
-
+  debug("Using the pull request message as a commit");
   return imitateCommit(subject, body);
 };
 
@@ -147,10 +156,12 @@ const getStrategies = () => Object.values(STRATEGY);
 
 const validateStrategy = (strategy) => {
   if (!strategy) {
+    debug(`Using strategy: ${STRATEGY.Github}`);
     return STRATEGY.Github;
   }
 
   if (Object.values(STRATEGY).includes(strategy)) {
+    debug(`Using strategy: ${strategy}`);
     return strategy;
   }
 
