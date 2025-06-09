@@ -72,7 +72,7 @@ const getGithubStrategyCommitBody = (commits) =>
   mergeItems(
     commits
       .map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
-      .reverse()
+      .reverse(),
   );
 
 const getGithubStrategyCommit = async (commits, prCommit) => {
@@ -100,7 +100,7 @@ const getStrictGithubStrategyCommit = async (commits) => {
   }
 
   throw new Error(
-    "The pull request title is not equal to the first commit title"
+    "The pull request title is not equal to the first commit title",
   );
 };
 
@@ -116,7 +116,7 @@ const getStrictPullRequestStrategyCommit = async (commits) => {
   }
 
   throw new Error(
-    "The pull request description is not equal to the first commit body"
+    "The pull request description is not equal to the first commit body",
   );
 };
 
@@ -167,7 +167,7 @@ const validateStrategy = (strategy) => {
 
   const strategies = getStrategies().join(", ");
   throw new Error(
-    `Invalid strategy: ${strategy}. Available options: ${strategies}`
+    `Invalid strategy: ${strategy}. Available options: ${strategies}`,
   );
 };
 

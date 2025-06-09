@@ -22,7 +22,7 @@ describe("utils", () => {
       expect(() => {
         validateStrategy(strategy);
       }).toThrow(
-        `Invalid strategy: ${strategy}. Available options: github, strict-github, pull-request, strict-pull-request`
+        `Invalid strategy: ${strategy}. Available options: github, strict-github, pull-request, strict-pull-request`,
       );
     });
 
@@ -51,7 +51,7 @@ describe("utils", () => {
         },
         (err) => {
           expect(err.message).toBe(`Unknown strategy: ${strategy}`);
-        }
+        },
       );
     });
 
@@ -100,7 +100,7 @@ describe("utils", () => {
               title: "pr title",
               body: "pr body",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -140,7 +140,7 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
-          }
+          },
         );
       });
     });
@@ -164,7 +164,7 @@ describe("utils", () => {
               title: "Commit title",
               body: "pr body",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -201,7 +201,7 @@ describe("utils", () => {
               title: "Commit title 1",
               body: "pr body",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -237,7 +237,7 @@ describe("utils", () => {
             },
             (err) => {
               expect(err.message).toBe("Where is it?");
-            }
+            },
           );
         });
 
@@ -266,7 +266,7 @@ describe("utils", () => {
             },
             (err) => {
               expect(err.message).toBe("Where is it?");
-            }
+            },
           );
         });
 
@@ -288,7 +288,7 @@ describe("utils", () => {
                 title: "pr title",
                 body: "description",
               },
-            })
+            }),
           );
 
           return getCommit(strategy, commits).then(
@@ -297,9 +297,9 @@ describe("utils", () => {
             },
             (err) => {
               expect(err.message).toBe(
-                "The pull request title is not equal to the first commit title"
+                "The pull request title is not equal to the first commit title",
               );
-            }
+            },
           );
         });
 
@@ -326,7 +326,7 @@ describe("utils", () => {
                 title: "Commit title 2",
                 body: "description 2",
               },
-            })
+            }),
           );
 
           return getCommit(strategy, commits).then(
@@ -335,9 +335,9 @@ describe("utils", () => {
             },
             (err) => {
               expect(err.message).toBe(
-                "The pull request title is not equal to the first commit title"
+                "The pull request title is not equal to the first commit title",
               );
-            }
+            },
           );
         });
       });
@@ -362,7 +362,7 @@ describe("utils", () => {
               title: "pr title",
               body: "pr body",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -399,7 +399,7 @@ describe("utils", () => {
               title: "pr title",
               body: "pr body",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -438,7 +438,7 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
-          }
+          },
         );
       });
 
@@ -462,7 +462,7 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
-          }
+          },
         );
       });
     });
@@ -486,7 +486,7 @@ describe("utils", () => {
               title: "Commit title",
               body: "description",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -523,7 +523,7 @@ describe("utils", () => {
               title: "Commit title 1",
               body: "description 1",
             },
-          })
+          }),
         );
         setMockResult(mockFn);
 
@@ -562,7 +562,7 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
-          }
+          },
         );
       });
 
@@ -586,7 +586,7 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe("Where is it?");
-          }
+          },
         );
       });
 
@@ -608,7 +608,7 @@ describe("utils", () => {
               title: "pr title",
               body: "pr body",
             },
-          })
+          }),
         );
 
         return getCommit(strategy, commits).then(
@@ -617,9 +617,9 @@ describe("utils", () => {
           },
           (err) => {
             expect(err.message).toBe(
-              "The pull request description is not equal to the first commit body"
+              "The pull request description is not equal to the first commit body",
             );
-          }
+          },
         );
       });
     });
@@ -639,9 +639,9 @@ describe("utils", () => {
             },
             (err) => {
               expect(err.message).toBe(`${envKey} is not defined`);
-            }
+            },
           );
-        }
+        },
       );
     });
   });

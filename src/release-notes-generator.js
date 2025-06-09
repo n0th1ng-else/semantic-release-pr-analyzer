@@ -11,7 +11,7 @@ const generateNotes = async (strategy, pluginConfig, context) => {
 
   const { parserOpts, writerOpts } = await loadChangelogConfig(
     pluginConfig,
-    context
+    context,
   );
 
   const parsedCommits = filter([
@@ -28,7 +28,7 @@ const generateNotes = async (strategy, pluginConfig, context) => {
   };
 
   return getStream(
-    intoStream.object(parsedCommits).pipe(writer(changelogContext, writerOpts))
+    intoStream.object(parsedCommits).pipe(writer(changelogContext, writerOpts)),
   );
 };
 
