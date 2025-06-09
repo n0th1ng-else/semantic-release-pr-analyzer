@@ -1,5 +1,6 @@
-const { Octokit } = require("@octokit/rest");
-const debug = require("debug")("semantic-release:pr-analyzer");
+import { Octokit } from "@octokit/rest";
+import debugFactory from "debug";
+const debug = debugFactory("semantic-release:pr-analyzer:utils");
 
 const getEnv = () => {
   const {
@@ -72,7 +73,7 @@ const getGithubStrategyCommitBody = (commits) =>
   mergeItems(
     commits
       .map(({ subject: t, body: b }) => getFullCommit(`* ${t}`, b))
-      .reverse(),
+      .reverse()
   );
 
 const getGithubStrategyCommit = async (commits, prCommit) => {
@@ -100,7 +101,7 @@ const getStrictGithubStrategyCommit = async (commits) => {
   }
 
   throw new Error(
-    "The pull request title is not equal to the first commit title",
+    "The pull request title is not equal to the first commit title"
   );
 };
 
@@ -116,7 +117,7 @@ const getStrictPullRequestStrategyCommit = async (commits) => {
   }
 
   throw new Error(
-    "The pull request description is not equal to the first commit body",
+    "The pull request description is not equal to the first commit body"
   );
 };
 
@@ -142,7 +143,7 @@ const getRawCommit = async (strategy, commits) => {
   }
 };
 
-const getCommit = async (strategy, commits) => {
+export async function getCommit(strategy, commits) {
   const commit = await getRawCommit(strategy, commits);
   const { prNumber } = getEnv();
 
@@ -150,11 +151,11 @@ const getCommit = async (strategy, commits) => {
     ...commit,
     subject: `${commit.subject} (#${prNumber})`,
   };
-};
+}
 
 const getStrategies = () => Object.values(STRATEGY);
 
-const validateStrategy = (strategy) => {
+export function validateStrategy(strategy) {
   if (!strategy) {
     debug(`Using strategy: ${STRATEGY.Github}`);
     return STRATEGY.Github;
@@ -167,11 +168,6 @@ const validateStrategy = (strategy) => {
 
   const strategies = getStrategies().join(", ");
   throw new Error(
-    `Invalid strategy: ${strategy}. Available options: ${strategies}`,
+    `Invalid strategy: ${strategy}. Available options: ${strategies}`
   );
-};
-
-module.exports = {
-  getCommit,
-  validateStrategy,
-};
+}
