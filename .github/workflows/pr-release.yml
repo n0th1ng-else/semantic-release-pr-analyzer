@@ -8,11 +8,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     name: Publish new debug version
-    if: contains(github.event.comment.body, '/publish')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/publish')
 
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
 
       - uses: actions/setup-node@v4
         with:
