@@ -11,7 +11,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     name: Publish new debug version
-    if: contains(github.event.comment.body, '/publish')
+#    if: contains(github.event.comment.body, '/publish')
 
     steps:
       - name: Checkout the repository
