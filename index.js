@@ -1,17 +1,23 @@
-const { analyzeCommits: ac } = require("./src/commit-analyzer");
-const { generateNotes: gn } = require("./src/release-notes-generator");
-const { validateStrategy } = require("./src/utils");
+import { analyzeCommits as ac } from "./src/commit-analyzer.js";
+import { generateNotes as gn } from "./src/release-notes-generator.js";
+import { validateStrategy } from "./src/utils.js";
 
-const analyzeCommits = async (pluginConfig, context) => {
+import debugFactory from "debug";
+const debug = debugFactory("semantic-release:pr-analyzer");
+
+export async function analyzeCommits(pluginConfig, context) {
+  debug("analyzeCommits() - pluginConfig: " + JSON.stringify(pluginConfig));
+
   const { commitAnalyzerConfig, strategy: strtg } = pluginConfig || {};
   const strategy = validateStrategy(strtg);
-  return ac(strategy, { ...pluginConfig, ...commitAnalyzerConfig }, context);
-};
+  debug("analyzeCommits() - commitAnalyzerConfig: " + JSON.stringify(commitAnalyzerConfig));
+  debug("analyzeCommits() - strategy: " + strategy);
 
-const generateNotes = async (pluginConfig, context) => {
+  return ac(strategy, { ...pluginConfig, ...commitAnalyzerConfig }, context);
+}
+
+export async function generateNotes(pluginConfig, context) {
   const { notesGeneratorConfig, strategy: strtg } = pluginConfig || {};
   const strategy = validateStrategy(strtg);
   return gn(strategy, { ...pluginConfig, ...notesGeneratorConfig }, context);
-};
-
-module.exports = { generateNotes, analyzeCommits };
+}

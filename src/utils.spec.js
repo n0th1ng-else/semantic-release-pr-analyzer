@@ -1,5 +1,7 @@
-const { setMockResult, resetMock } = require("./__mocks__/@octokit/rest");
-const { validateStrategy, getCommit } = require("./utils");
+import { jest } from "@jest/globals";
+
+import { setMockResult, resetMock } from "./__mocks__/@octokit/rest.js";
+import { validateStrategy, getCommit } from "./utils.js";
 
 const REAL_ENV = process.env;
 

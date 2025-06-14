@@ -1,5 +1,6 @@
-const { Octokit } = require("@octokit/rest");
-const debug = require("debug")("semantic-release:pr-analyzer");
+import { Octokit } from "@octokit/rest";
+import debugFactory from "debug";
+const debug = debugFactory("semantic-release:pr-analyzer:utils");
 
 const getEnv = () => {
   const {
@@ -142,7 +143,7 @@ const getRawCommit = async (strategy, commits) => {
   }
 };
 
-const getCommit = async (strategy, commits) => {
+export async function getCommit(strategy, commits) {
   const commit = await getRawCommit(strategy, commits);
   const { prNumber } = getEnv();
 
@@ -150,11 +151,11 @@ const getCommit = async (strategy, commits) => {
     ...commit,
     subject: `${commit.subject} (#${prNumber})`,
   };
-};
+}
 
 const getStrategies = () => Object.values(STRATEGY);
 
-const validateStrategy = (strategy) => {
+export function validateStrategy(strategy) {
   if (!strategy) {
     debug(`Using strategy: ${STRATEGY.Github}`);
     return STRATEGY.Github;
@@ -169,9 +170,4 @@ const validateStrategy = (strategy) => {
   throw new Error(
     `Invalid strategy: ${strategy}. Available options: ${strategies}`
   );
-};
-
-module.exports = {
-  getCommit,
-  validateStrategy,
-};
+}
