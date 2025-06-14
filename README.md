@@ -84,3 +84,5 @@ set automatically.
 ## Examples
 
 ##### You can see the sample configuration in the [examples folder](https://github.com/n0th1ng-else/semantic-release-pr-analyzer/tree/main/examples).
+
+#### Test pre-publish
