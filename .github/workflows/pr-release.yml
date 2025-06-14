@@ -3,6 +3,9 @@ name: PR pre-release version
 on:
   issue_comment:
     types: [created, edited]
+  push:
+    branches:
+      - early-version
 
 jobs:
   publish:
