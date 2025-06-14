@@ -30,8 +30,8 @@ jobs:
         run: npm ci
 
       - name: Publish new pre-release version
-        run: npx semantic-release@17.4.7 --debug --dry-run
+        # Pretend we are in the early branch to pre-publish the version
+        run: GITHUB_REF=early npx semantic-release@17.4.7 --debug --dry-run
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: "early" # Pretend we are in the early branch to pre-publish the version
