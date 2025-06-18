@@ -1,12 +1,14 @@
-const { analyzeCommits, generateNotes } = require("..");
-const ac = require("./commit-analyzer").analyzeCommits;
-const gn = require("./release-notes-generator").generateNotes;
+import { jest } from "@jest/globals";
 
-jest.mock("./commit-analyzer", () => ({
+import { analyzeCommits, generateNotes } from "../index.js";
+import { analyzeCommits as ac } from "./commit-analyzer.js";
+import { generateNotes as gn } from "./release-notes-generator.js";
+
+jest.unstable_mockModule("./commit-analyzer.js", () => ({
   analyzeCommits: jest.fn().mockResolvedValue(),
 }));
 
-jest.mock("./release-notes-generator", () => ({
+jest.unstable_mockModule("./release-notes-generator.js", () => ({
   generateNotes: jest.fn().mockResolvedValue(),
 }));
 
